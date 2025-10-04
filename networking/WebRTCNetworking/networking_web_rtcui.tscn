@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3 uid="uid://b524pjak5hi4o"]
+
+[ext_resource type="Script" uid="uid://bb85vqeysncht" path="res://networking/WebRTCNetworking/client_web_rtc.gd" id="1_vy1yp"]
+[ext_resource type="Script" uid="uid://cqb0gbf5kvy31" path="res://networking/WebRTCNetworking/server_web_rtc.gd" id="2_laedh"]
+
+[node name="NetworkingWebRTCUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ClientWebRTC" type="Node" parent="."]
+script = ExtResource("1_vy1yp")
+
+[node name="ServerWebRTC" type="Node" parent="."]
+script = ExtResource("2_laedh")
+
+[node name="ClientBtn" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Join"
+
+[node name="ServerBtn" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -49.0
+offset_right = 4.0
+offset_bottom = -41.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Host"
+
+[node name="SendPacket" type="Button" parent="."]
+layout_mode = 0
+offset_left = 185.0
+offset_top = 101.0
+offset_right = 193.0
+offset_bottom = 109.0
+text = "SEND PACKET"
+
+[connection signal="pressed" from="ClientBtn" to="ClientWebRTC" method="_on_client_btn_pressed"]
+[connection signal="pressed" from="ServerBtn" to="ServerWebRTC" method="_on_server_btn_pressed"]
+[connection signal="pressed" from="SendPacket" to="ClientWebRTC" method="_on_send_packet_pressed"]
