@@ -43,8 +43,18 @@ func join_lobby(user_id, lobby_id) -> void:
 	if lobby_id == "":
 		lobby_id = generate_rand_str()
 		lobbies[lobby_id] = LobbyWebRTC.new(user_id)
+		print(lobby_id)
 	
 	lobbies[lobby_id].add_player(user_id)
+	
+	for player in lobbies[lobby_id].players:
+		var lobby_info = {
+			"message": Message.lobby,
+			"players": JSON.stringify(lobbies[lobby_id].players)
+		}
+		var packet = JSON.stringify(lobby_info).to_utf8_buffer()
+		peer.get_peer(player).put_packet(packet)
+	
 	var data = {
 		"message": int(Message.userConnected),
 		"id": int(user_id),
@@ -58,7 +68,7 @@ func join_lobby(user_id, lobby_id) -> void:
 func generate_rand_str():
 	randomize()
 	var result = ""
-	for i in range(32):
+	for i in range(8):
 		var random_index = randi() % characters.length()
 		result += characters[random_index]
 	

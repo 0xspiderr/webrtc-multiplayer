@@ -31,7 +31,17 @@ func _process(_delta: float) -> void:
 			if data.message == Message.id:
 				id = int(data.id)
 			
+			if data.message == Message.userConnected:
+				_create_peer(data.id)
+			
+			if data.message == Message.lobby:
+				print(JSON.parse_string(data.players))
+			
 			print(data)
+
+
+func _create_peer(peer_id: int) -> void:
+	pass
 
 
 func _connect_to_server(_ip: String) -> void:
