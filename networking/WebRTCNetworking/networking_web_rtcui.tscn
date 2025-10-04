@@ -55,6 +55,20 @@ offset_right = 193.0
 offset_bottom = 109.0
 text = "SEND PACKET"
 
+[node name="LobbyBtn" type="Button" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "JOIN LOBBY"
+
+[node name="LobbyLineEdit" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 41.0
+offset_right = 76.5625
+offset_bottom = 72.0
+
 [connection signal="pressed" from="ClientBtn" to="ClientWebRTC" method="_on_client_btn_pressed"]
 [connection signal="pressed" from="ServerBtn" to="ServerWebRTC" method="_on_server_btn_pressed"]
 [connection signal="pressed" from="SendPacket" to="ClientWebRTC" method="_on_send_packet_pressed"]
+[connection signal="pressed" from="LobbyBtn" to="ClientWebRTC" method="_on_lobby_btn_pressed"]
