@@ -33,24 +33,46 @@ func _process(_delta: float) -> void:
 		if packet != null:
 			var data_string = packet.get_string_from_utf8()
 			var data = JSON.parse_string(data_string)
-			print(data)
+			#print(data)
 			
 			if data.message == Message.lobby:
 				join_lobby(int(data.id), data.lobby_value)
+			
+			if data.message == Message.offer || data.message == Message.answer \
+			|| data.message == Message.candidate:
+				print("source id is " + str(data.original_peer) + " message " + str(data.sdp))
+				var conn = JSON.stringify(data).to_utf8_buffer()
+				peer.get_peer(data.id).put_packet(conn)
 
 
 func join_lobby(user_id, lobby_id) -> void:
 	if lobby_id == "":
 		lobby_id = generate_rand_str()
 		lobbies[lobby_id] = LobbyWebRTC.new(user_id)
-		print(lobby_id)
+		#print(lobby_id)
 	
 	lobbies[lobby_id].add_player(user_id)
 	
 	for player in lobbies[lobby_id].players:
+		# send to first player in the lobby
+		var conn = {
+			"message": Message.userConnected,
+			"id": user_id
+		}
+		var conn_packet = JSON.stringify(conn).to_utf8_buffer()
+		peer.get_peer(player).put_packet(conn_packet)
+		
+		var req = {
+			"message": Message.userConnected,
+			"id": player
+		}
+		var req_packet = JSON.stringify(req).to_utf8_buffer()
+		peer.get_peer(user_id).put_packet(req_packet)
+		
 		var lobby_info = {
 			"message": Message.lobby,
-			"players": JSON.stringify(lobbies[lobby_id].players)
+			"players": JSON.stringify(lobbies[lobby_id].players),
+			"lobby_value": lobby_id
 		}
 		var packet = JSON.stringify(lobby_info).to_utf8_buffer()
 		peer.get_peer(player).put_packet(packet)
@@ -59,7 +81,8 @@ func join_lobby(user_id, lobby_id) -> void:
 		"message": int(Message.userConnected),
 		"id": int(user_id),
 		"host": int(lobbies[lobby_id].host_id),
-		"player": lobbies[lobby_id].players[user_id]
+		"player": lobbies[lobby_id].players[user_id],
+		"lobby_value": lobby_id
 	}
 	var packet = JSON.stringify(data).to_utf8_buffer()
 	peer.get_peer(user_id).put_packet(packet)
@@ -71,7 +94,7 @@ func generate_rand_str():
 	for i in range(8):
 		var random_index = randi() % characters.length()
 		result += characters[random_index]
-	
+	$"../Label".text = result
 	return result
 
 func _start_server() -> void:
